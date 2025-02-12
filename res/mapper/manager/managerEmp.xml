@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="managerEmp">
+
+	<select id="allCountEmp" resultType="int">
+		SELECT COUNT(*) FROM
+		EMPLOYEE
+	</select>
+
+	<select id="selectEmp" resultType="EmpVo" parameterType="map">
+		SELECT B .*
+		FROM (
+		SELECT ROWNUM AS RNUM, A.*
+		FROM (
+		SELECT E.*,
+		d.department_name, c.*
+		FROM
+		EMPLOYEE E ,department D, customer C
+		where
+		E.DEPARTMENT_NO=D.DEPARTMENT_NO
+		and e.emp_no=c.cust_no
+		and C.STATE=1
+		ORDER BY emp_NO DESC
+		) A
+      		<![CDATA[	
+		
+	WHERE ROWNUM <= #{end}
+		) B
+		WHERE B.RNUM >=#{start}
+			]]>
+	</select>
+
+	<update id="deleteEmp" parameterType="int">
+		UPDATE CUSTOMER
+		SET
+		CUSTOMER.STATE=2
+		WHERE CUSTOMER.CUST_NO=#{cust_no}
+	</update>
+
+	<select id="selectEmpAll" resultType="EmpVo" parameterType="map">
+		SELECT *
+		FROM EMPLOYEE
+	</select>
+
+
+	<select id="selectDepartment" resultType="EmpVo"
+		parameterType="map">
+		SELECT B .*
+		FROM (
+		SELECT ROWNUM AS RNUM, A.*
+		FROM (
+		SELECT E.*,
+		d.department_name, c.*
+		FROM
+		EMPLOYEE E, department D, customer C
+		where
+		E.DEPARTMENT_NO=D.DEPARTMENT_NO
+		and e.emp_no=c.cust_no
+		and C.STATE=1
+		ORDER BY e.DEPARTMENT_NO asc
+		) A
+      		<![CDATA[	 	
+	WHERE ROWNUM <= #{end}
+		) B
+		WHERE B.RNUM >=#{start}
+			]]>
+	</select>
+
+	<select id="departmentList"
+		resultType="kr.or.ddit.vo.DepartmentVo">
+
+		SELECT *
+		FROM DEPARTMENT
+		WHERE DEPARTMENT_NO!=1
+	</select>
+
+
+	<update id="changeDepartment" parameterType="empVo">
+	    UPDATE EMPLOYEE
+		SET
+		DEPARTMENT_NO=#{department_no}
+		WHERE EMP_NO=#{emp_no}
+	</update>
+
+</mapper>

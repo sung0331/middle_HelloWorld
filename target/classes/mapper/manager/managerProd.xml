@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="managerProd">
+
+	<select id="countProd" resultType="int">
+		SELECT COUNT(*) FROM
+		PRODUCT
+	</select>
+
+	<select id="selectProd" resultType="ProductVo"
+		parameterType="map">
+		SELECT B .*
+		FROM (
+		SELECT ROWNUM AS RNUM, A.*
+		FROM (
+		SELECT
+		P.*,pc.PROD_CATENAME
+		FROM
+		product P, prod_category PC
+		where
+		p.PROD_CATE_NO=pc.PROD_CATE_NO
+		ORDER BY PROD_NO DESC
+		) A
+		
+      		<![CDATA[	
+		
+	WHERE ROWNUM <= #{end}
+		) B
+		WHERE B.RNUM >=#{start}
+			]]>
+	</select>
+
+
+	<update id="prodDelete" parameterType="int">
+		UPDATE PRODUCT
+		SET
+		PROD_STATE=2
+		WHERE PROD_NO=#{prod_no}
+	</update>
+
+	<select id="getCate" resultType="kr.or.ddit.vo.ProdCategoryVo">
+		SELECT * FROM
+		PROD_CATEGORY
+		WHERE
+		PROD_CATE_NO2 IS NOT NULL
+		ORDER BY PROD_CATE_NO ASC
+	</select>
+
+
+	<insert id="productInsert" parameterType="ProductVo">
+		INSERT INTO PRODUCT
+		(PROD_NO, PROD_NAME, PROD_PRICE,PROD_COMMENT,PROD_CATE_NO,PROD_STATE)
+		VALUES ((SELECT NVL(MAX(PROD_NO),0)+1 FROM PRODUCT),
+		#{prod_name},#{prod_price},#{prod_comment},#{prod_cate_no},1)
+
+	</insert>
+
+	<insert id="productImgSet" parameterType="ProdImageVo">
+		INSERT INTO PROD_IMAGE
+		(PROD_IMG_NO, PROD_IMG_NAME, PROD_IMG_TYPE,PROD_NO,PROD_IMG_LINK)
+		VALUES ((SELECT NVL(MAX(PROD_IMG_NO),0)+1 FROM PROD_IMAGE),
+		#{prod_img_name},#{prod_img_type},((SELECT NVL(MAX(PROD_NO),0) FROM
+		PRODUCT)),#{prod_img_link})
+	</insert>
+
+	<select id="countSell" resultType="int">
+		SELECT COUNT(*) FROM
+		BUY
+	</select>
+
+
+	<select id="selectSell" resultType="kr.or.ddit.vo.BuyVo"
+		parameterType="map">
+		SELECT B .*
+		FROM (
+		SELECT ROWNUM AS RNUM, A.*
+		FROM (
+		SELECT
+		B.*,C.CUST_NAME
+		FROM
+		BUY B, customer C
+		WHERE B.CUST_NO=C.CUST_NO
+		ORDER BY
+		BUY_NO DESC
+		) A
+		<![CDATA[	
+		
+	WHERE ROWNUM <= #{end}
+		) B
+		WHERE B.RNUM >=#{start}
+			]]>
+	</select>
+
+	<select id="prodDetail" resultType="BuyCartVo"
+		parameterType="int">
+		SELECT BC.PROD_NO, BC.BUY_NO, BC.STATE AS CART_STATE,
+		P.PROD_NAME,
+		P.PROD_PRICE, BC.AMOUNT, (P.PROD_PRICE*BC.AMOUNT) AS
+		TOTAL_PRICE
+		FROM BUY_CART BC, PRODUCT P, BUY B, CUSTOMER C
+		WHERE
+		BC.BUY_NO=B.BUY_NO
+		AND BC.PROD_NO=P.PROD_NO
+		AND B.CUST_NO=C.CUST_NO
+		AND
+		B.BUY_NO=#{#buy_no}
+
+
+
+	</select>
+
+	<update id="sellUpdate" parameterType="int">
+		UPDATE BUY
+		SET STATE=STATE+1
+		WHERE BUY_NO=#{buy_no}
+
+	</update>
+</mapper>

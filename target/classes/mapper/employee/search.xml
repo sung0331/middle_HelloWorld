@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="search">
+
+
+		<!-- 회원 관리에서 회원 검색 -->
+	    <select id="searchCustomer" parameterType="String" resultType="MakeVo">
+	     <!-- SELECT * FROM -->
+				<!-- (
+				SELECT C.CUST_NO cust_no, 
+        		CUST_NAME cust_name,
+        		RSVT_DATE rsvt_date,
+        		AMOUNT amount,
+        		PROD_NAME prod_name
+        		FROM customer C, buy B, buy_cart BC, product P, prod_category PC
+        		WHERE C.cust_no = B.cust_no
+        		AND BC.buy_no = B.buy_no
+        		AND BC.prod_no = P.prod_no
+                AND p.prod_cate_no=pc.prod_cate_no
+                AND pc.prod_cate_no2=2
+				)
+    			WHERE cust_name LIKE '%' || #{query} || '%'  -->
+		      <!--   OR cust_name LIKE '%' || #{query} || '%'
+		        OR rsvt_date LIKE '%' || #{query} || '%'
+		        OR amount LIKE '%' || #{query} || '%'
+		        OR prod_name LIKE '%' || #{query} || '%' -->
+		       
+		        SELECT make_no, cust_name, rsvt_date, amount, prod_name, make_state
+                    FROM MAKE M, CUSTOMER C
+                    WHERE M.cust_no = C.cust_no
+                    <if test="query!=null and query!=''">
+                    	AND C.cust_name LIKE '%' || #{query} || '%'
+                    </if>
+		       
+		</select>
+
+	 <!-- 멤버 검색 -->
+    <!-- <select id="searchMember" parameterType="String" resultType="kr.or.ddit.member.vo.MemberVo">
+	    SELECT *
+	    FROM member
+	    WHERE mem_name LIKE '%' || #{query} || '%'
+	       OR mem_id LIKE '%' || #{query} || '%'
+	       OR mem_nick LIKE '%' || #{query} || '%'
+		</select> -->
+
+	<!-- 상품 검색 -->
+    <!-- <select id="searchProd" parameterType="String" resultType="kr.or.ddit.prod.vo.ProdVo">
+    SELECT *
+    FROM prod
+    WHERE prod_name LIKE '%' || #{query} || '%'
+       OR prod_description LIKE '%' || #{query} || '%'
+	</select> -->
+
+
+    <!-- 게시글 검색 -->
+    <!-- <select id="searchBoard" parameterType="String" resultType="kr.or.ddit.board.vo.BoardVo">
+    SELECT *
+    FROM board
+    WHERE title LIKE '%' || #{query} || '%'
+       OR content LIKE '%' || #{query} || '%'
+	</select> -->
+</mapper>

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MyPage">
+
+
+	<select id="getUserInfo" parameterType="int"
+		resultType="CustomerVo">
+		SELECT * FROM CUSTOMER WHERE CUST_NO = #{cust_no}
+	</select>
+
+
+	<select id="getCustomerList" resultType="CustomerVo">
+		SELECT
+		cust_no,
+		cust_name,
+		cust_mail,
+		cust_address2
+		FROM
+		customer
+	</select>
+
+	<select id="getPassword" parameterType="int" resultType="String">
+		SELECT CUST_PW FROM customer WHERE CUST_NO = #{cust_no}
+	</select>
+
+
+	<!-- 회원정보 수정/탈퇴 -->
+	<update id="updateUserProfile" parameterType="CustomerVo">
+		UPDATE customer
+		SET cust_name = #{cust_name},
+		cust_address1 = #{cust_address1},
+		cust_address2 = #{cust_address2},
+		cust_mail = #{cust_mail}
+		<if test="cust_pw != null">
+			, cust_pw = #{cust_pw}
+		</if>
+		WHERE cust_no = #{cust_no}
+	</update>
+
+
+	<update id="deleteUser" parameterType="int">
+		UPDATE CUSTOMER
+		SET STATE=2
+		WHERE CUST_NO = #{cust_no}
+	</update>
+
+
+	<!-- 장바구니 -->
+	<!-- <select id="getCartListByCustId" parameterType="String" resultType="kr.or.ddit.vo.CartVo"> -->
+	<!-- SELECT P.PROD_NO, C.CART_NO, P.PROD_NAME, I.PROD_IMG_LINK, SUM(C.AMOUNT) 
+		AS TOTAL_PRICE, P.PROD_PRICE -->
+	<!-- FROM CART C -->
+	<!-- JOIN PRODUCT P ON C.PROD_NO = P.PROD_NO -->
+	<!-- JOIN PROD_IMAGE I ON P.PROD_NO = I.PROD_NO -->
+	<!-- WHERE C.CUST_ID = #{custId} -->
+	<!-- GROUP BY P.PROD_NO, C.CART_NO, P.PROD_NAME, I.PROD_IMG_LINK, P.PROD_PRICE -->
+	<!-- </select> -->
+
+
+
+	<select id="getCartItems" resultType="CartVo">
+		SELECT C.BUY_NO as cart_no,
+		C.AMOUNT as amount,
+		P.PROD_NO as prod_no,
+		P.PROD_NAME as prod_name,
+		P.PROD_COMMENT as prod_comment,
+		P.PROD_PRICE as price,
+		B.STATE as cart_state
+		FROM BUY_CART C
+		JOIN PRODUCT P ON C.PROD_NO = P.PROD_NO
+		JOIN BUY B ON B.BUY_NO = C.BUY_NO
+		WHERE B.CUST_NO = #{cust_no}
+		AND B.STATE = 1
+		ORDER BY C.RSVT_DATE DESC
+	</select>
+
+
+
+	<update id="updateCartItemQuantity" parameterType="CartVo">
+		UPDATE BUY_CART
+		SET AMOUNT = #{amount}
+		WHERE CART_NO = #{cart_no}
+	</update>
+
+	<delete id="deleteCartItem" parameterType="CartVo">
+		DELETE FROM BUY_CART
+		WHERE CART_NO = #{cart_no}
+	</delete>
+
+
+
+	<!-- 나의 등급 -->
+	<!-- <select id="getMembership" parameterType="String" resultType="GradeVo"> -->
+	<!-- SELECT C.CUST_NO, C.CUST_NAME, G.GRADE_NAME, G.PERCENT -->
+	<!-- FROM CUSTOMER C, GRADE G -->
+	<!-- WHERE C.GRADE_NO = G.GRADE_NO -->
+	<!-- AND CUST_NO = #{cust_no} -->
+	<!-- </select> -->
+
+
+	<!-- 회원 정보 가져오기 -->
+	<select id="getMembership" parameterType="int"
+		resultType="CustomerVo">
+		SELECT *
+		FROM customer
+		WHERE CUST_NO = #{cust_no}
+	</select>
+
+	<!-- 회원 등급 정보 가져오기 -->
+	<select id="selectGradeByCustomer" parameterType="int"
+		resultType="GradeVo">
+		SELECT g.grade_no, g.grade_name, g.percent
+		FROM grade g
+		JOIN customer c ON g.grade_no = c.grade_no
+		WHERE C.CUST_NO = #{cust_no}
+	</select>
+
+
+	<!-- 전체 게시물 수 가져오기 -->
+	<select id="countMyPosts" resultType="int">
+		SELECT COUNT(*)
+		FROM BOARD
+		WHERE CUST_NO = #{userNo}
+	</select>
+
+	<!-- 페이지 범위에 따라 게시물 가져오기 -->
+	<select id="selectPostsPaging" parameterType="map"
+		resultType="BoardVo">
+		SELECT *
+		FROM (
+		SELECT ROW_NUMBER() OVER (ORDER BY B.POST_NO DESC) AS RNUM,
+		B.POST_NO, B.TITLE, B.CONTENT, B.BOARD_STATE, B.CNT, B.BOARD_NO, B.CUST_NO,
+		C.BOARD_NAME
+		FROM BOARD B
+		JOIN BOARD_CODE C ON B.BOARD_NO = C.BOARD_NO
+		WHERE B.CUST_NO = #{userNo}
+		AND (C.BOARD_NO = 1 OR C.BOARD_NO = 2)
+		) TEMP
+		WHERE RNUM BETWEEN #{start} AND #{end}
+	</select>
+
+
+	<!-- 페이지 범위에 따라 게시물 가져오기 -->
+	<select id="selectReviewsPaging" parameterType="map"
+		resultType="BoardVo">
+		SELECT *
+		FROM (
+		SELECT ROW_NUMBER() OVER (ORDER BY B.POST_NO DESC) AS RNUM,
+		B.POST_NO, B.TITLE, B.CONTENT, B.BOARD_STATE, B.CNT, B.BOARD_NO, B.CUST_NO,
+		C.BOARD_NAME
+		FROM BOARD B
+		JOIN BOARD_CODE C ON B.BOARD_NO = C.BOARD_NO
+		WHERE B.CUST_NO = #{userNo}
+		AND C.BOARD_NO = 3
+		) TEMP
+		WHERE RNUM BETWEEN #{start} AND #{end}
+	</select>
+
+
+	<!-- 내가 쓴 리뷰 -->
+	<!-- <select id="countMyReviews" parameterType="int" resultType="BoardVo"> -->
+	<!-- SELECT * -->
+	<!-- FROM BOARD B, BOARD_CODE C -->
+	<!-- WHERE B.BOARD_NO = C.BOARD_NO -->
+	<!-- AND C.BOARD_NO = 3 -->
+	<!-- AND B.CUST_NO = #{custNo} -->
+	<!-- ORDER BY POST_NO -->
+	<!-- </select> -->
+
+	<select id="countMyReviews" parameterType="int" resultType="int">
+		SELECT COUNT(*)
+		FROM BOARD B, BOARD_CODE C
+		WHERE C.BOARD_NO = 3
+		AND B.CUST_NO = #{userNo}
+	</select>
+
+	<!-- 리뷰 조회를 위한 SQL 쿼리 -->
+	<select id="selectReviews" parameterType="int"
+		resultType="BoardVo">
+		SELECT B.POST_NO, B.TITLE, B.CONTENT, B.BOARD_STATE, B.CNT, B.BOARD_NO,
+		B.CUST_NO, C.BOARD_NAME
+		FROM BOARD B
+		JOIN BOARD_CODE C ON B.BOARD_NO = C.BOARD_NO
+		WHERE C.BOARD_NO = 2
+		AND B.CUST_NO = #{userNo}
+	</select>
+
+
+	<select id="getBoardList" resultType="BoardVo">
+		SELECT post_no, title, content, board_date, cnt, board_state, board_no,
+		cust_no, writer, board_name
+		FROM board
+	</select>
+
+
+	<select id="getPointList" parameterType="int"
+		resultType="PointVo">
+		SELECT * FROM POINT WHERE CUST_NO = #{custNo}
+	</select>
+
+
+	<!-- 포인트 -->
+	<select id="getPoint" parameterType="int" resultType="PointVo">
+		SELECT
+		POINT_STATE, POINT_VALUE, POINT_CONTENT, POINT_DATE
+		FROM POINT
+		WHERE
+		CUST_NO = #{custNo}
+	</select>
+
+
+
+
+
+	<select id="getOrders" parameterType="int">
+		SELECT C.BUY_NO, P.PROD_NAME, AMOUNT, SUM(PROD_PRICE) AS TOTAL_PRICE,
+		B.BUY_DATE
+		FROM PRODUCT P , BUY_CART C, BUY B, CUSTOMER A
+		WHERE P.PROD_NO = C.PROD_NO
+		AND C.BUY_NO = B.BUY_NO
+		AND B.CUST_NO = A.CUST_NO
+		AND A.CUST_NO = #{custNo}
+		GROUP BY C.BUY_NO,P.PROD_NAME, C.AMOUNT, B.BUY_DATE
+		ORDER BY BUY_NO
+	</select>
+
+
+	<select id="getOrderList" resultType="BuyCartVo">
+		SELECT B.BUY_NO AS buy_no,
+		B.CUST_NO AS cust_no,
+		C.AMOUNT AS amount,
+		C.RSVT_DATE AS rsvt_date,
+		P.PROD_NAME AS prod_name,
+		P.PROD_PRICE AS prod_price,
+		B.STATE AS state
+		FROM BUY B
+		JOIN BUY_CART C ON B.BUY_NO = C.BUY_NO
+		JOIN PRODUCT P ON C.PROD_NO = P.PROD_NO
+		WHERE B.CUST_NO = #{cust_no}
+		ORDER BY C.RSVT_DATE DESC
+	</select>
+
+
+
+</mapper>
+
+

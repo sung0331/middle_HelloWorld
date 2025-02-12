@@ -1,0 +1,36 @@
+package kr.or.ddit.controller.pay;
+
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+<<<<<<< .mine
+||||||| .r447505
+import kr.or.ddit.service.product.IProductService;
+import kr.or.ddit.service.product.ProductServiceImpl;
+=======
+import jakarta.servlet.http.HttpSession;
+import kr.or.ddit.service.product.IProductService;
+import kr.or.ddit.service.product.ProductServiceImpl;
+>>>>>>> .r447913
+
+@WebServlet("/PayEnd.do")
+public class PayEndController extends HttpServlet {
+	
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		System.out.println("결제완료 페이지");
+		HttpSession session = req.getSession();
+		session.setAttribute("PayEndCode", "PayEnd");
+		System.out.println(session.getAttribute("PayEnd"));
+		
+		
+		req.getRequestDispatcher("/WEB-INF/view/pay/payEnd.jsp").forward(req, resp);
+	}
+	
+	
+	
+}

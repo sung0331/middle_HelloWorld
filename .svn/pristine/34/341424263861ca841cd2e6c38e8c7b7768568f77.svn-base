@@ -1,0 +1,39 @@
+package kr.or.ddit.controller.signup;
+
+import java.io.IOException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+@WebServlet("/signup.do")
+public class SignupServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("회원가입 페이지 요청");
+        System.out.println("test");
+        req.getRequestDispatcher("/WEB-INF/signup.jsp").forward(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("회원가입 처리");
+        
+        // 요청 파라미터 받기
+        String username = req.getParameter("username");
+        String email = req.getParameter("email");
+        String password = req.getParameter("password");
+        String birthdate = req.getParameter("birthdate");
+        String gender = req.getParameter("gender");
+        String phone = req.getParameter("phone");
+        String agreeMarketing = req.getParameter("agreeMarketing");
+
+        // 여기에 회원가입 처리 로직 구현
+        // 예: 데이터베이스에 사용자 정보 저장
+
+        System.out.println("회원가입 처리 완료");
+        resp.sendRedirect(req.getContextPath() + "/signupSuccess.do");
+    }
+}

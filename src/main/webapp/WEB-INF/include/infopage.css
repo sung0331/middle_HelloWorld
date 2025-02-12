@@ -1,0 +1,132 @@
+    <style>body,
+    html {
+    	font-family: 'Noto Sans KR', sans-serif;
+    	margin: 0;
+    	padding: 0;
+    	color: #333;
+    	line-height: 1.6;
+    }
+
+    .container {
+    	max-width: 1200px;
+    	margin: 0 auto;
+    	padding: 0 20px;
+    }
+
+    header {
+    	background-color: #ffffff;
+    	padding: 20px 0;
+    	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .header-content {
+    	display: flex;
+    	justify-content: space-between;
+    	align-items: center;
+    }
+
+    .logo {
+    	font-size: 2rem;
+    	font-weight: bold;
+    	color: #1e88e5;
+    }
+
+    nav ul {
+    	list-style-type: none;
+    	padding: 0;
+    	display: flex;
+    }
+
+    nav ul li {
+    	margin-left: 30px;
+    }
+
+    nav ul li a {
+    	color: #333;
+    	text-decoration: none;
+    	transition: color 0.3s ease;
+    }
+
+    nav ul li a:hover {
+    	color: #1e88e5;
+    }
+
+    .section {
+    	padding: 60px 0;
+    }
+
+    h1,
+    h2 {
+    	color: #1e88e5;
+    	text-align: center;
+    }
+
+    .info-grid {
+    	display: grid;
+    	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    	gap: 30px;
+    	margin-top: 40px;
+    }
+
+    .info-item {
+    	background: white;
+    	padding: 20px;
+    	border-radius: 8px;
+    	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .info-item h3 {
+    	color: #1e88e5;
+    	margin-top: 0;
+    }
+
+    table {
+    	width: 100%;
+    	border-collapse: collapse;
+    	margin-top: 20px;
+    }
+
+    th,
+    td {
+    	border: 1px solid #ddd;
+    	padding: 10px;
+    	text-align: left;
+    	
+    }
+    td img{
+		            object-fit:fill	;
+	}
+
+    th {
+    	background-color: #f4f4f4;
+    }
+
+    footer {
+    	background-color: #1e88e5;
+    	color: white;
+    	text-align: center;
+    	padding: 20px 0;
+    	margin-top: 60px;
+    }
+
+    .note {
+    	font-size: 0.9em;
+    	color: #666;
+    	margin-top: 10px;
+    }
+
+    .attraction-image {
+    	width: 150px;
+    	height: 100px;
+    	object-fit: cover;
+    	border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
+    	.attraction-image {
+    		width: 100px;
+    		height: 75px;
+    	}
+    }
+
+    </style>

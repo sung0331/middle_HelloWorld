@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="managerCustomer">
+
+	<select id="allCountMember" resultType="int">
+		SELECT COUNT(*) 
+		FROM
+		CUSTOMER
+				WHERE STATE=1
+		
+	</select>
+	<select id="selectCustomer" resultType="CustomerVo"
+		parameterType="map">
+		SELECT B .*
+		FROM (
+		SELECT ROWNUM AS RNUM, A.*
+		FROM (
+		SELECT C.*,
+		M.MOBILE_NAME, G.GRADE_NAME
+		FROM
+		CUSTOMER C, MOBILE M, GRADE G
+      		<![CDATA[	
+         WHERE CUST_TYPE>=1
+         AND CUST_TYPE<=2
+                  AND C.MOBILE_NO=M.MOBILE_NO
+         AND C.GRADE_NO=G.GRADE_NO
+         AND STATE=1
+         
+		ORDER BY CUST_NO DESC
+		) A
+		
+	WHERE ROWNUM <= #{end}
+		) B
+		WHERE B.RNUM >=#{start}
+			]]>
+
+
+	</select>
+	<update id="deleteCustomer" parameterType="int">
+		UPDATE CUSTOMER
+		SET
+		CUSTOMER.STATE=2
+		WHERE CUSTOMER.CUST_NO=#{cust_no}
+	</update>
+		<select id="customerDetail" resultType="CustomerVo"		parameterType="int">
+
+		SELECT * FROM
+		CUSTOMER
+		WHERE CUST_NO=#{cust_no}
+	</select>
+	
+</mapper>

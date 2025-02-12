@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="product">
+
+	<select id="allCountList" resultType="int">
+		SELECT COUNT(*) FROM
+		PRODUCT
+	</select>
+
+	<select id="selectList" resultType="ProductVo"
+		parameterType="map">
+		SELECT *
+		FROM (
+		SELECT
+		A.*,
+		ROWNUM AS RNUM
+		FROM (
+		SELECT
+		P.PROD_NO,
+		P.PROD_NAME,
+		P.PROD_PRICE,
+		P.PROD_COMMENT,
+		P.PROD_CATE_NO,
+		CASE
+		WHEN
+		P.PROD_NO = PI.PROD_NO THEN PI.PROD_IMG_LINK
+		ELSE NULL
+		END AS
+		PROD_IMG_LINK
+		FROM
+		PRODUCT P
+		LEFT JOIN
+		PROD_IMAGE PI
+		ON
+		P.PROD_NO =
+		PI.PROD_NO
+		ORDER BY
+		P.PROD_NO DESC
+		) A
+        <![CDATA[
+            WHERE ROWNUM <= #{end}
+        ]]>
+		) B
+		WHERE B.RNUM >= #{start}
+	</select>
+
+	<select id="getProductDetail" resultType="ProductVo"
+		parameterType="int">
+		SELECT P.*,PI.PROD_IMG_LINK
+		FROM PRODUCT P, PROD_IMAGE PI
+		WHERE P.PROD_NO = #{prod_no}
+		AND P.PROD_NO=PI.PROD_NO
+	</select>
+	<select id="selectBuycart" resultType="kr.or.ddit.vo.BuyVo"
+		parameterType="int">
+		SELECT B.BUY_NO, B.CUST_NO,
+		C.CUST_ADDRESS1,C.CUST_ADDRESS2
+		FROM BUY
+		B,CUSTOMER C
+		WHERE B.STATE=1
+		AND
+		B.CUST_NO=C.CUST_NO
+		AND B.CUST_NO=#{cust_no}
+		ORDER BY B.BUY_DATE DESC
+	</select>
+
+	<insert id="giveBuycart" parameterType="kr.or.ddit.vo.BuyVo">
+		INSERT INTO BUY
+		(BUY_NO,
+		BUY_DATE, TOTAL_PRICE,BUY_ADDRESS,STATE,CUST_NO)
+		VALUES ((SELECT
+		NVL(MAX(BUY_NO),0)+1 FROM BUY),
+		SYSDATE, 0,
+		#{buy_address},1,#{cust_no})
+	</insert>
+
+	<insert id="putCart" parameterType="BuyCartVo">
+		INSERT INTO BUY_CART
+		(BUY_NO,
+		PROD_NO, AMOUNT, RSVT_DATE,RATE,STATE)
+		VALUES
+		(#{buy_no}, #{prod_no},
+		#{amount}, SYSDATE, 0,1)
+	</insert>
+
+	<select id="chkBuycartNo" resultType="kr.or.ddit.vo.BuyVo"
+		parameterType="int">
+		SELECT *
+		FROM BUY
+		WHERE CUST_NO=#{cust_no}
+		AND STATE=1
+		ORDER BY BUY_NO DESC
+	</select>
+	<select id="totalPrice" parameterType="int" resultType="int">
+		SELECT
+		NVL(SUM(P.PROD_PRICE * BC.AMOUNT), 0)
+		FROM BUY_CART BC, BUY B, PRODUCT
+		P
+		WHERE BC.BUY_NO = B.BUY_NO
+		AND P.PROD_NO = BC.PROD_NO
+		AND BC.BUY_NO =
+		#{buy_no}
+	</select>
+	<update id="updateTotalPrice"
+		parameterType="kr.or.ddit.vo.BuyVo">
+		UPDATE BUY
+		SET TOTAL_PRICE=#{total_price}, STATE=2
+		WHERE BUY_NO = #{buy_no}
+	</update>
+
+	<insert id="putPayInfo" parameterType="kr.or.ddit.vo.PayVo">
+		INSERT INTO PAY
+		(BUY_NO,
+		PAY_PRICE, PAY_DATE, PAYMENT_NO)
+		VALUES
+		(#{buy_no},
+		#{pay_price},
+		SYSDATE, 1)
+	</insert>
+</mapper>

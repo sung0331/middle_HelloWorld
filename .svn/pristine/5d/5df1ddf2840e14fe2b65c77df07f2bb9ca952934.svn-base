@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="prodSale">
+
+
+	<select id="selectGoods" resultType="ProdSalesVo"
+		parameterType="map">
+
+		SELECT ps.*, PR.PROD_NAME
+		FROM prod_sales ps
+		JOIN product PR ON ps.PROD_NO = PR.PROD_NO
+		WHERE EXTRACT(YEAR FROM TO_DATE(SALES_MONTH, 'YY/MM/DD')) = #{year}
+		AND EXTRACT(MONTH FROM TO_DATE(SALES_MONTH, 'YY/MM/DD')) = #{month}
+	</select>
+
+</mapper>

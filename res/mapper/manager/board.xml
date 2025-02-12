@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="managerBoard">
+
+	<select id="allCountList" resultType="int">
+		SELECT COUNT(*) 
+		 FROM BOARD
+		 WHERE BOARD_STATE=1
+	</select>
+
+	<select id="selectList" resultType="BoardVo" parameterType="map">
+		SELECT B.* FROM(
+		SELECT ROWNUM AS RNUM, A.*
+		FROM(
+		SELECT B.* ,
+		C.CUST_NAME AS WRITER ,BC.BOARD_NAME
+		FROM BOARD B, CUSTOMER C,
+		BOARD_CODE BC
+		where C.CUST_NO =
+		B.CUST_NO
+		AND B.BOARD_NO = BC.BOARD_NO
+
+		AND BOARD_STATE=1
+		ORDER BY POST_NO DESC
+		) A
+	<![CDATA[	
+		    WHERE ROWNUM <= #{end}
+		)B WHERE B.RNUM >= #{start}
+	]]>
+	</select>
+
+	<select id="boardDetail" resultType="BoardVo"
+		parameterType="int">
+		SELECT B.POST_NO, B.BOARD_NO, TITLE, CONTENT ,
+		B.CUST_NO, CNT, B.BOARD_DATE
+		, BC.BOARD_NAME, C.CUST_NAME WRITER
+		FROM
+		BOARD B, BOARD_CODE BC,
+		CUSTOMER C
+		WHERE B.BOARD_NO = BC.BOARD_NO
+
+		AND
+		B.CUST_NO = C.CUST_NO
+		AND
+		B.POST_NO = #{board_no}
+	</select>
+	<update id="boardUpdate" parameterType="BoardVo">
+		UPDATE BOARD
+		SET
+		CONTENT =
+		#{content},
+		TITLE = #{title}
+		WHERE POST_NO = #{post_no}
+	</update>
+
+	<select id="countAnnouncementList" resultType="int">
+		SELECT COUNT(*) FROM BOARD
+			<![CDATA[	
+		WHERE BOARD_NO>=4
+		AND BOARD_NO<=5
+	]]>
+	</select>
+
+	<select id="selectAnnouncementList" resultType="BoardVo"
+		parameterType="map">
+		SELECT B.* FROM(
+		SELECT ROWNUM AS RNUM, A.*
+		FROM(
+		SELECT B.* ,
+		C.CUST_NAME AS WRITER, BC.BOARD_NAME
+		FROM BOARD B, CUSTOMER C,
+		BOARD_CODE BC
+		where C.CUST_NO =
+		B.CUST_NO
+		AND B.BOARD_NO = BC.BOARD_NO
+
+		
+	<![CDATA[	
+	AND B.BOARD_NO>=4
+		AND B.BOARD_NO<=6
+		ORDER BY POST_NO DESC
+		) A
+		    WHERE ROWNUM <= #{end}
+		)B WHERE B.RNUM >= #{start}
+	]]>
+	</select>
+	<update id="boardDelete" parameterType="BoardVo">
+		UPDATE BOARD
+		SET
+		BOARD_STATE = 2
+		WHERE POST_NO = #{board_no}
+
+	</update>
+	<insert id="boardinsert" parameterType="BoardVo">
+		INSERT INTO BOARD
+		(POST_NO, TITLE ,CONTENT, BOARD_DATE,CNT, BOARD_STATE,
+		BOARD_NO,
+		CUST_NO)
+		VALUES ((SELECT NVL(MAX(POST_NO),0)+1 FROM BOARD), #{title},
+		#{content}, SYSDATE, 0, 1,#{board_no},#{cust_no})
+	</insert>
+	<insert id="boardImgSet" parameterType="kr.or.ddit.vo.BoardImageVo">
+		INSERT INTO BOARD_IMAGE
+		(BOARD_IMG_NO, BOARD_IMG_NAME, BOARD_IMG_TYPE,POST_NO,BOARD_IMG_LINK)
+		VALUES ((SELECT NVL(MAX(PROD_IMG_NO),0)+1 FROM PROD_IMAGE),
+		#{board_img_name},#{board_img_type},((SELECT NVL(MAX(POST_NO),0) FROM BOARD)),#{board_img_link})
+
+
+	</insert>
+
+</mapper>

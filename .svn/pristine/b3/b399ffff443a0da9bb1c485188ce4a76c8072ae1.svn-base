@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<properties resource="db.properties" />
+
+	<typeAliases>
+		<typeAlias type="kr.or.ddit.vo.BoardVo" alias="BoardVo" />
+		<typeAlias type="kr.or.ddit.vo.empVo" alias="empVo" />
+		<typeAlias type="kr.or.ddit.vo.BuyCartVo" alias="BuyCartVo" />
+		<typeAlias type="kr.or.ddit.vo.ProdSalesVo" alias="ProdSalesVo" />
+		<typeAlias type="kr.or.ddit.vo.CustomerVo" alias="CustomerVo" />
+		<typeAlias type="kr.or.ddit.vo.VacationVo" alias="VacationVo" />
+		<typeAlias type="kr.or.ddit.vo.RideVo" alias="RideVo" />
+		<typeAlias type="kr.or.ddit.vo.ProductVo" alias="ProductVo" />
+		<typeAlias alias="ProdImageVo" type="kr.or.ddit.vo.ProdImageVo" />
+		<typeAlias type="kr.or.ddit.vo.SheduleVo" alias="SheduleVo" />
+		<typeAlias type="kr.or.ddit.vo.PointVo" alias="PointVo" />
+		<typeAlias type="kr.or.ddit.vo.CartVo" alias="CartVo" />
+		<typeAlias type="kr.or.ddit.vo.MakeVo" alias="MakeVo" />
+		<typeAlias type="kr.or.ddit.vo.GradeVo" alias="GradeVo" />
+		<typeAlias type="kr.or.ddit.vo.ProductVo" alias="ProductVo" />
+
+	</typeAliases>
+
+
+
+	<!-- POOLED : MyBatis 자체 DB 커넥션을 사용한다. 미리 DB 커넥션 객체를 생성해 두고 요청하면 즉시 반환한다. 
+		데이터베이스 연결을 초기화하고 사용자를 인증하는 과정이 없기 때문에 속도가 빠르다. -->
+
+	<environments default="dev">
+		<environment id="dev">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${user}" />
+				<property name="password" value="${password}" />
+				<!-- 활성화된 최대 커넥션 수 -->
+				<property name="poolMaximumActiveConnections" value="1" />
+				<!-- 유휴상태에서의 최대 커넥션 수 -->
+				<property name="poolMaximumIdleConnections" value="1" />
+			</dataSource>
+		</environment>
+	</environments>
+
+
+
+	<mappers>
+		<!-- <mapper resource="mapper/member.xml" /> -->
+		<mapper resource="mapper/manager/board.xml" />
+		<mapper resource="mapper/manager/prodSale.xml" />
+		<mapper resource="mapper/manager/buyCart.xml" />
+		<mapper resource="mapper/employee/emp.xml" />
+		<mapper resource="mapper/employee/event.xml" />
+		<mapper resource="mapper/employee/search.xml" />
+		<mapper resource="mapper/manager/buyCart.xml" />
+		<mapper resource="mapper/manager/ManagerCustomer.xml" />
+		<mapper resource="mapper/manager/managerEmp.xml" />
+		<mapper resource="mapper/manager/managerVac.xml" />
+		<mapper resource="mapper/manager/managerShedule.xml" />
+		<mapper resource="mapper/manager/managerProd.xml" />
+		<mapper resource="mapper/MyPage.xml" />
+
+
+
+		<mapper resource="mapper/product.xml"/>
+
+	</mappers>
+
+
+</configuration>
+	
+
+

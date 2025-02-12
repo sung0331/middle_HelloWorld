@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="emp">
+
+	<select id="empList" resultType="MakeVo" >
+		SELECT make_no, cust_name, rsvt_date, amount, prod_name, make_state
+       FROM MAKE M, CUSTOMER C
+       WHERE 
+       M.cust_no=C.cust_no
+       ORDER BY RSVT_DATE DESC
+       <!-- AND C.cust_no=#{cust_no} -->
+	</select>
+	
+	<select id="selectList" resultType="MakeVo" parameterType="map"> <!-- 페이지 버튼 -->
+	SELECT * FROM (
+    SELECT ROWNUM AS RNUM, A.* 
+    FROM (
+        SELECT make_no, cust_name, rsvt_date, amount, prod_name, make_state
+        FROM MAKE M, CUSTOMER C
+        WHERE M.cust_no = C.cust_no
+        ORDER BY RSVT_DATE DESC
+   	 ) A
+   	 <![CDATA[
+    	WHERE ROWNUM <= #{end}
+		) B 
+		WHERE B.RNUM >= #{start}
+	]]>
+	</select>
+
+	<select id="empDepartment" resultType="empVo"><!-- 조직도 -->
+		SELECT emp_no , emp_name,
+		cust_tel, department_name
+		FROM employee E, customer C, department D
+		WHERE E.emp_no=C.cust_no
+		AND E.department_no = D.department_no
+		AND cust_type =3
+	</select>
+
+
+	<select id="empBoard" resultType="empVo" parameterType="empVo"><!--공지사항  -->
+		<!-- SELECT title, content, board_date
+		FROM BOARD
+		WHERE BOARD_NO=5 -->
+		
+		SELECT title, content, board_date, department_name
+		FROM BOARD B, customer C, department D,employee E
+		WHERE B.cust_no=C.cust_no
+        AND E.department_no = D.department_no
+        AND BOARD_NO=5
+        AND emp_no = #{emp_no}
+	</select>
+
+	<select id="empDeailBoard" resultType="empVo">
+		SELECT title, content, board_date, department_name
+		FROM BOARD B, customer C, department D,employee E
+		WHERE B.cust_no=C.cust_no
+        AND E.department_no = D.department_no
+        AND BOARD_NO=5
+	</select>
+
+	<select id="empVacation" resultType="empVo" parameterType="empVo"> <!--로그인마다 다름  -->
+		SELECT emp_name,
+		vacation_type, less_date, d.department_name, v.*
+		FROM department d, employee e, vacation v
+		WHERE d.department_no = e.department_no
+		AND e.emp_no = v.emp_no
+		AND e.emp_no = #{emp_no}
+	</select>
+
+	<select id="countList" resultType="int"><!--회원수 체크  -->
+		SELECT COUNT(*)
+		FROM make
+	</select>
+	
+	<!-- 휴가신청 달력 표시 cust_no-->
+	<select id="Vacation" resultType="empVo" parameterType="empVo">
+
+		 SELECT emp_no, start_date,end_date,vaction_state
+		FROM vacation
+		where vaction_state=2
+        AND emp_no = #{emp_no}
+	</select>
+
+
+	<select id="Shedule" resultType="empVo" parameterType="empVo"> <!--일정표 체크/로그인마다 다름 cust_no  -->
+		 select ride_name, shed_date , shed_start_time , shed_end_time , emp_no
+		from shedule s, ride r
+		where s.ride_no=r.ride_no
+        and emp_no = #{emp_no}
+        and s.shed_state=1
+	</select>
+
+	<insert id="insertVacation" parameterType="empVo" ><!-- 휴가신청서/로그인마다 다름 -->
+		INSERT INTO vacation (vacation_no,vacation_type, start_date, end_date,
+		appli_date, vaction_state, manage_date, emp_no)
+		VALUES((SELECT NVL(MAX(vacation_no), 0)+1 FROM vacation),
+		#{vacation_type},
+		TO_DATE(#{start_date},'YYYY/MM/DD'),
+		TO_DATE(#{end_date},'YYYY/MM/DD'),
+		SYSDATE,
+		#{vaction_state}+1,
+		null,
+		#{emp_no})
+	</insert>
+	
+	
+	
+	<select id="stateVacation" resultType="empVo" parameterType="empVo"><!--휴가 승인 반려 확인 로그인마다 다름  -->
+      SELECT vaction_state, emp_no
+    	FROM VACATION V , CUSTOMER C
+		WHERE v.emp_no = c.cust_no
+    	AND cust_no = #{cust_no}
+	</select> 
+	
+	<update id="makeUpdate" parameterType="MakeVo"> <!--예약 사용 여부 체크 -->
+	UPDATE MAKE
+	SET MAKE_STATE = 2
+	WHERE MAKE_NO = #{make_no}
+	</update>
+	
+   	<update id="deleteCustomer" parameterType="int"><!-- 탈퇴 -->
+     <!--  UPDATE CUSTOMER
+      SET
+      CUSTOMER.state=2
+      WHERE CUSTOMER.CUST_NO=#{cust_no} -->
+      UPDATE CUSTOMER
+      SET
+      CUSTOMER.state=2
+      WHERE CUSTOMER.CUST_NO=#{cust_no}
+      
+   </update>
+	
+	<update id="changeCustomer" parameterType="empVo"><!-- 수정 -->
+	UPDATE CUSTOMER
+	SET 
+    cust_name = #{cust_name},
+    cust_pw = #{cust_pw},
+    cust_mail = #{cust_mail},
+    cust_address1 = #{cust_address1},
+    cust_address2 = #{cust_address2},
+	WHERE 
+    emp_no =#{emp_no} 
+	</update>
+
+</mapper>

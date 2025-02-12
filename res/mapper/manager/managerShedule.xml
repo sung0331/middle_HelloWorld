@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="managerShedule">
+
+	<select id="countShedule" resultType="int">
+		SELECT COUNT(*) FROM
+		SHEDULE
+	</select>
+
+	<select id="selectShedule" resultType="SheduleVo"
+		parameterType="map">
+		SELECT B .*
+		FROM (
+		SELECT ROWNUM AS RNUM, A.*
+		FROM (
+		SELECT S.*,
+		E.EMP_NAME, R.RIDE_NAME
+		FROM
+		EMPLOYEE E ,SHEDULE S, RIDE R
+		WHERE
+		E.EMP_NO=S.EMP_NO
+		AND R.RIDE_NO=S.RIDE_NO
+		AND SHED_STATE=1
+
+		ORDER BY
+		S.SHED_NO DESC
+		) A
+			<![CDATA[	
+	WHERE ROWNUM <= #{end}
+		) B
+		WHERE B.RNUM >=#{start}
+			]]>
+	</select>
+
+	<update id="deleteshedule" parameterType="int">
+		UPDATE SHEDULE
+		SET
+		SHED_STATE=2
+		WHERE SHED_NO=#{shed_no}
+	</update>
+	<select id="getRideAll" resultType="RideVo" parameterType="map">
+		SELECT *
+		FROM RIDE
+	</select>
+	<insert id="sheduleInsert" parameterType="SheduleVo">
+		INSERT INTO SHEDULE
+		(SHED_NO, SHED_DATE, RIDE_NO,EMP_NO,SHED_START_TIME,SHED_END_TIME,
+		SHED_STATE)
+		VALUES ((SELECT NVL(MAX(SHED_NO),0)+1 FROM SHEDULE),
+		TO_DATE(#{shed_date}, 'YYYY-MM-DD'),#{ride_no},
+		#{emp_no},#{shed_start_time},#{shed_end_time},1)
+
+	</insert>
+</mapper>

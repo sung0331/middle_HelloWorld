@@ -1,0 +1,202 @@
+<style>
+        :root {
+            --primary-color: #1e88e5;
+            --secondary-color: #ffc107;
+            --text-color: #333;
+            --light-bg: #f4f4f4;
+            --header-height: 80px;
+            --naver-color: #03C75A;
+            --kakao-color: #FEE500;
+        }
+        body, html {
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            line-height: 1.6;
+            height: 100%;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        header {
+            background-color: #ffffff;
+            color: var(--text-color);
+            padding: 0;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            transition: box-shadow 0.3s ease;
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary-color);
+        }
+        .logo a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+        .header-actions button {
+            margin-left: 10px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+        .EmpMyPage-btn, .MangerMyPage-btn {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+        }
+        .EmpMyPage-btn:hover, .MangerMyPage-btn:hover {
+            background-color: #e6a800;
+        }
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc(100vh - var(--header-height));
+            background-image: url('/api/placeholder/1200/800');
+            background-size: cover;
+            background-position: center;
+            padding-top: var(--header-height);
+        }
+        .login-form, .welcome-message {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-form h2, .welcome-message h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        .btn:hover {
+            background-color: #1565c0;
+        }
+        .forgot-password {
+            text-align: right;
+            margin-top: 1rem;
+        }
+        .forgot-password a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+        .social-login {
+            margin-top: 1rem;
+        }
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+        .social-btn svg {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+        }
+        .naver-btn {
+            background-color: var(--naver-color);
+            color: white;
+        }
+        .naver-btn:hover {
+            background-color: #02a54b;
+        }
+        .kakao-btn {
+            background-color: var(--kakao-color);
+            color: #3c1e1e;
+        }
+        .kakao-btn:hover {
+            background-color: #e6cf00;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .signup-link {
+            text-align: center;
+            margin-top: 1rem;
+        }
+        .signup-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        .welcome-message p {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+</style>

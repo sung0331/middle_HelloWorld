@@ -1,0 +1,121 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<title>결제 완료 페이지</title>
+<style>
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f9f9f9;
+	color: #333;
+	max-width: 600px;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+h2 {
+	text-align: center;
+	color: #333;
+}
+
+.confirmation-box {
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.info {
+	font-weight: bold;
+	margin-top: 15px;
+}
+
+.info-row {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 10px;
+}
+
+.label {
+	font-weight: bold;
+}
+
+.value {
+	text-align: right;
+}
+
+.back-button {
+	width: 100%;
+	padding: 10px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	margin-top: 20px;
+}
+
+.back-button:hover {
+	background-color: #0056b3;
+}
+</style>
+</head>
+<body>
+	<h2>결제 완료</h2>
+	<div class="confirmation-box">
+		<p class="info">결제가 완료되었습니다. 아래는 결제 정보입니다:</p>
+
+		<div class="info-row">
+			<span class="label">이름:</span> <span class="value">${param.name}</span>
+		</div>
+
+		<div class="info-row">
+			<span class="label">주소:</span> <span class="value">${param.address}
+				, ${param.addressDetail}</span>
+		</div>
+
+
+
+		<div class="info-row">
+			<span class="label">배송 요청사항:</span> <span class="value">${param.deliveryRequest}</span>
+		</div>
+
+		<div class="info-row">
+			<span class="label">포인트 사용:</span> <span class="value">${param.points}
+				포인트</span>
+		</div>
+
+		<div class="info-row">
+			<span class="label">쿠폰 사용:</span> <span class="value">${param.coupon}</span>
+		</div>
+
+		<div class="info-row">
+			<span class="label">상품명:</span> <span class="value">${param.product}</span>
+		</div>
+
+		<div class="info-row">
+			<span class="label">상품 가격:</span> <span class="value">${param.price}원</span>
+		</div>
+
+		<div class="info-row">
+			<span class="label">수량:</span> <span class="value">${param.quantity}</span>
+		</div>
+
+		<div class="info-row">
+			<span class="label">결제 방법:</span> <span class="value">${param.paymentMethod}</span>
+		</div>
+
+		<div class="info-row">
+			<span class="label">총 결제 금액:</span> <span class="value">${param.totalAmount}원</span>
+		</div>
+
+		<a href="index.jsp" class="back-button">메인 페이지로 돌아가기</a>
+	</div>
+
+
+</body>
+</html>

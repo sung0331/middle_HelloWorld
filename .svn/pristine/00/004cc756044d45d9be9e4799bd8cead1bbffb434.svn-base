@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="MangerBuyCart">
+
+
+	<select id="selectGoods" resultType="BuyCartVo"
+		parameterType="map">
+		SELECT pr.prod_name,
+		SUM(bc.amount) amount,
+		pr.prod_cate_no,
+		pc.prod_cate_no2
+		FROM buy_cart bc
+		JOIN product PR ON bc.PROD_NO = PR.PROD_NO
+		JOIN prod_category PC ON PR.prod_cate_no = PC.prod_cate_no
+		WHERE EXTRACT(YEAR FROM TO_DATE(RSVT_DATE, 'YY/MM/DD')) = #{year}
+		AND EXTRACT(MONTH FROM TO_DATE(RSVT_DATE, 'YY/MM/DD')) = #{month}
+		AND pc.prod_cate_no2 = 1
+		GROUP BY pr.prod_name, pr.prod_cate_no, pc.prod_cate_no2
+		ORDER BY pr.prod_name
+	</select>
+	
+		<select id="selectTicket" resultType="BuyCartVo"
+		parameterType="map">
+
+
+		SELECT pr.prod_name,
+		SUM(bc.amount) amount,
+		pr.prod_cate_no,
+		pc.prod_cate_no2
+		FROM buy_cart bc
+		JOIN product PR ON bc.PROD_NO = PR.PROD_NO
+		JOIN prod_category PC ON PR.prod_cate_no = PC.prod_cate_no
+		WHERE EXTRACT(YEAR FROM TO_DATE(RSVT_DATE, 'YY/MM/DD')) = #{year}
+		AND EXTRACT(MONTH FROM TO_DATE(RSVT_DATE, 'YY/MM/DD')) = #{month}
+		AND pc.prod_cate_no2 = 2
+		GROUP BY pr.prod_name, pr.prod_cate_no, pc.prod_cate_no2
+		ORDER BY pr.prod_name
+	</select>
+</mapper>

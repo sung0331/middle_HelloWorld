@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="managerVac">
+
+	<select id="allCountVac" resultType="int">
+		SELECT COUNT(*) FROM
+		VACATION
+	</select>
+
+	<select id="selectVac" resultType="VacationVo"
+		parameterType="map">
+		SELECT B .*
+		FROM (
+		SELECT ROWNUM AS RNUM, A.*
+		FROM (
+		SELECT V.*,
+		E.EMP_NAME, E.DEPARTMENT_NAME
+		FROM
+		(SELECT EM.*, D.DEPARTMENT_NAME
+		FROM
+		EMPLOYEE EM ,DEPARTMENT D
+		WHERE EM.DEPARTMENT_NO=D.DEPARTMENT_NO
+		ORDER BY EMP_NO) E ,VACATION V
+		WHERE E.EMP_NO=V.EMP_NO
+		AND V.VACTION_STATE=1
+		ORDER BY V.VACATION_NO ASC
+		) A
+      		<![CDATA[	
+	WHERE ROWNUM <= #{end}
+		) B
+		WHERE B.RNUM >=#{start}
+			]]>
+	</select>
+
+	<update id="changeState" parameterType="VacationVo">
+	UPDATE vacation
+	SET
+	VACTION_STATE=#{vaction_state}
+	WHERE VACATION_NO=#{vacation_no}
+	</update>
+</mapper>
